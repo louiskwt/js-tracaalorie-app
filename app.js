@@ -11,9 +11,9 @@ const ItemCtrl = (function() {
     // Data Structure / State in React
     const data = {
         items: [
-            {id:0, name: 'Steak Dinner', calories: 1200},
-            {id:1, name: 'Cookies', calories: 400},
-            {id:2, name: 'Ice Cream', calories: 500},
+            // {id:0, name: 'Steak Dinner', calories: 1200},
+            // {id:1, name: 'Cookies', calories: 400},
+            // {id:2, name: 'Ice Cream', calories: 500},
         ],
         currentItem: null,
         totalCalories: 0
@@ -73,6 +73,26 @@ const UICtrl = (function() {
             // Insert List Items
             document.querySelector(UISelectors.itemList).innerHTML = html;
         },
+        addListItem: function(item) {
+            // Show the list 
+            document.querySelector(UISelectors.itemList).style.display = 'block';
+            // Create li element
+            const li = document.createElement('li');
+            // Add class
+            li.className= 'collection-item';
+            // Add ID
+            li.id = `item-${item.id}`;
+
+            // Add HTML
+            li.innerHTML = `
+                <strong>${item.name}: </strong> <em>${item.calories} Calories</em>
+                <a href="#" class="secondary-content">
+                    <i class="edit-item fa fa-pencil"></i>
+                </a>
+            `
+            // Insert Item
+            document.querySelector(UISelectors.itemList).insertAdjacentElement('beforeend', li);
+        },
         getItemsInput: function() {
             return {
                 name: document.querySelector(UISelectors.itemNameInput).value,
@@ -81,6 +101,13 @@ const UICtrl = (function() {
         },
         getSelectors: function() {
             return UISelectors;
+        },
+        clearInput: function() {
+            document.querySelector(UISelectors.itemNameInput).value = '';
+            document.querySelector(UISelectors.itemCaloriesInput).value = '';
+        },
+        hideList: function() {
+            document.querySelector(UISelectors.itemList).style.display = 'none';
         }
     }
 })();
@@ -105,6 +132,10 @@ const App = (function(ItemCtrl, UICtrl) {
         if(input.name !== '' && input.calories !== '') {
             // Add item
             const newItem = ItemCtrl.addItem(input.name, input.calories);
+            // Add Itemt to UI list
+            UICtrl.addListItem(newItem);
+            // clear field
+            UICtrl.clearInput();
         }
 
         e.preventDefault();
@@ -116,8 +147,14 @@ const App = (function(ItemCtrl, UICtrl) {
             console.log("Initializing App...");
             // Fetch Items from Data structure
             const items = ItemCtrl.getItems();
-            // Populate list with items
-            UICtrl.populateItemList(items);
+
+            // Check if any items 
+            if(items.length === 0) {
+                UICtrl.hideList();
+            } else {
+                // Populate list with items
+                UICtrl.populateItemList(items);
+            }
             // Load Event Listener
             loadEventListeners();
         }
