@@ -139,6 +139,7 @@ const App = (function(ItemCtrl, UICtrl) {
 
     // Add Item submit
     const itemAddSubmit = function(e) {
+        e.preventDefault();
         // Get Item from UI controller
         const input = UICtrl.getItemsInput();
 
@@ -156,9 +157,11 @@ const App = (function(ItemCtrl, UICtrl) {
 
             // clear field
             UICtrl.clearInput();
+        } else {
+            console.log("hi");
+            // Show a toast to tell the user to enter something using Materialise
+            M.toast({html: 'Please enter all the fields'});
         }
-
-        e.preventDefault();
     }
 
     // Public methods
